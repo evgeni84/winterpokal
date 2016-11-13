@@ -4,10 +4,10 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.0"
     defaultConfig {
-        applicationId "de.ea.winterpokal"
+        applicationId "de.ea.winterpokalIBC"
         minSdkVersion 9
         targetSdkVersion 25
-        versionCode 2006
+        versionCode 8
         versionName "2.1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Winterpokal</string>
-    <string name="app_name_login">Winterpokal - Login</string>
-    <string name="app_name_ranking">Winterpokal - Ranking</string>
-    <string name="app_name_add">Winterpokal - Eintrag hinzufügen</string>
+    <string name="app_name">Winterpokal IBC</string>
+    <string name="app_name_login">Winterpokal IBC - Login</string>
+    <string name="app_name_ranking">Winterpokal IBC - Ranking</string>
+    <string name="app_name_add">Winterpokal IBC - Eintrag hinzufügen</string>
     <string name="search_hint">Name eintippen</string>
     <string name="sportType">Sportart</string>
     <string name="activityDate">Datum</string>
