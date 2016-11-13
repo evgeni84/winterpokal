@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="fill_horizontal"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical" >
+
+  <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content" >
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/user" />
+    <TextView
+            android:id="@+id/tvUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/trTeam"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content" >
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/team" />
+
+    <TextView
+        android:id="@+id/tvTeam"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="4dp"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+  </LinearLayout>
+
+  <TableRow
+      android:id="@+id/tableRow1"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content" >
+
+    <TableRow
+        android:id="@+id/trPoints" android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical" >
+
+      <ImageView
+          android:id="@+id/imageView1"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:src="@drawable/star" />
+
+      <TextView
+          android:id="@+id/tvPoints"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="4dp"
+          android:textAppearance="?android:attr/textAppearanceMedium" />
+    </TableRow>
+
+
+
+
+
+
+    <TableRow
+        android:id="@+id/trTotalTime"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="fill_vertical|fill_horizontal"
+        android:gravity="center_vertical" >
+
+
+
+
+      <ImageView
+          android:id="@+id/imageView3"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:src="@drawable/timer" />
+
+      <TextView
+          android:id="@+id/tvTotalTime"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="4dp"
+          android:textAppearance="?android:attr/textAppearanceMedium" />
+    </TableRow>
+  </TableRow>
+
+  <ListView
+      android:id="@+id/android:list"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent" >
+  </ListView>
+
+  <Button
+      android:id="@+id/bMore"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/loadMore" />
+
+</LinearLayout>

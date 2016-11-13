@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Winterpokal</string>
+    <string name="app_name_login">Winterpokal - Login</string>
+    <string name="app_name_ranking">Winterpokal - Ranking</string>
+    <string name="app_name_add">Winterpokal - Eintrag hinzufügen</string>
+    <string name="search_hint">Name eintippen</string>
+    <string name="sportType">Sportart</string>
+    <string name="activityDate">Datum</string>
+    <string name="duration">Dauer</string>
+    <string name="durationWithTimeUnit">Dauer (Std:Min)</string>
+    <string name="distance">Distanz</string>
+    <string name="distanceWithUnit">Distanz (km)</string>
+    <string name="durationHint">Minuten</string>
+    <string name="notes">Notizen</string>
+    <string name="save">Speichern</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="addWPEntry">Einheit hinzufügen</string>
+    <string name="loginName">Benutzername</string>
+    <string name="hintLoginOrEmail">Name oder E-mail</string>
+    <string name="password">Passwort</string>
+    <string name="doLogin">Anmelden</string>
+    <string name="error">Fehler</string>
+    <string name="errorOnSave">Ein Fehler ist beim Speichern aufgetreten</string>
+    <string name="errorOnLoad">Ein Fehler ist beim Laden aufgetreten</string>
+    <string name="ok">Ok</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
+    <string name="menu_add">Hinzufügen</string>
+    <string name="menu_search">Suche</string>
+    <string name="menu_refresh">Aktualisieren</string>
+    <string name="menu_settings">Einstellungen</string>
+    <string name="menu_logout">Logout</string>
+    <string name="loggingIn">Anmeldung&#8230;</string>
+    <string name="loading">Laden&#8230;</string>
+    <string name="emtpy"></string>
+    <string name="userRanking">Einzeln</string>
+    <string name="teamRanking">Team</string>
+    <string name="loadMore">Mehr</string>
+    <string name="entrySaved">Eintrag gespeichert</string>
+    <string name="entrySaveFailed">Abspeichern fehlgeschlagen</string>
+    <string name="noConnection">Es besteht keine Internetverbindung.
+        Bitte stelle sicher, dass die Internetverbidnung aktiv ist und versuche es dann erneut.</string>
+        
+    <string name="makeFavorite">Zu Favoriten hinzufügen</string>
+    <string name="removeFavorite">Aus Favoriten entfernen</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_add_entry">Eintrag hinzufügen</string>
+    <string name="action_add_entry_save">Eintrag speichern</string>
+    <string name="action_add_entry_cancel">Eintrag verwerfen</string>
+    <string name="add_entry_cancel_confirm_title">Eintrag verwerfen?</string>
+    <string name="add_entry_cancel_confirm_button_ok">OK</string>
+    <string name="add_entry_cancel_confirm_button_cancel">Abbrechen</string>
+    <string-array name="object_type">
+        <item>User</item>
+        <item>Team</item>
+    </string-array>
+
+</resources>

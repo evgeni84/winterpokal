@@ -1,0 +1,27 @@
+#
+# generated on 2012/01/08 06:46:50
+#
+# --table-start--
+dataClass=de.ea.winterpokal.model.WPEntry
+tableName=wpEntry
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=sport
+# --field-end--
+# --field-start--
+fieldName=date
+canBeNull=false
+# --field-end--
+# --field-start--
+fieldName=duration
+# --field-end--
+# --field-start--
+fieldName=description
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################

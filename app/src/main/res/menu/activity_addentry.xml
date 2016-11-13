@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:yourapp="http://schemas.android.com/apk/res-auto" >
+
+    <!-- Search, should appear as action button -->
+    <item
+        android:id="@+id/action_add_entry_save"
+        android:icon="@drawable/ic_save_black_24dp"
+        android:title="@string/action_add_entry_save"
+        yourapp:showAsAction="always"/>
+    <!-- Settings, should always be in the overflow -->
+    <item
+        android:id="@+id/action_add_entry_cancel"
+        android:icon="@drawable/ic_clear_black_24dp"
+        android:title="@string/action_add_entry_cancel"
+        yourapp:showAsAction="collapseActionView"/>
+</menu>
