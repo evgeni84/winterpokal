@@ -53,7 +53,18 @@ public class FavoritesRemoteDAO implements IFavoritesDAO {
 
 		if ("OK".equals(response.getStatus())) {
 			for (TeamObject d : response.getData()) {
-				teams.add(d.getTeam());
+				WPTeam team = d.getTeam();
+				if(team!=null) {
+					teams.add(team);
+					team.setUsers(d.getUsers());
+					if (d.getUsers() != null) {
+						for (WPUser user : d.getUsers()) {
+							user.setTeam(team);
+						}
+					}
+					team.setDuration(team.getDurationComputed());
+					team.setPoints(team.getPointsComputed());
+				}
 			}
 		} else {
 			Log.e("GetTeamFavoritesFailed", responseString);
