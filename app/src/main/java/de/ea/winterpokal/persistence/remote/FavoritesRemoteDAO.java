@@ -57,13 +57,6 @@ public class FavoritesRemoteDAO implements IFavoritesDAO {
 				if(team!=null) {
 					teams.add(team);
 					team.setUsers(d.getUsers());
-					if (d.getUsers() != null) {
-						for (WPUser user : d.getUsers()) {
-							user.setTeam(team);
-						}
-					}
-					team.setDuration(team.getDurationComputed());
-					team.setPoints(team.getPointsComputed());
 				}
 			}
 		} else {

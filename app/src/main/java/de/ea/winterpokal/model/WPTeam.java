@@ -67,6 +67,13 @@ public class WPTeam implements Serializable {
 
 	public void setUsers(List<WPUser> users) {
 		this.users = users;
+		if (users != null) {
+			for (WPUser user : users) {
+				user.setTeam(this);
+			}
+		}
+		setDuration(getDurationComputed());
+		setPoints(getPointsComputed());
 	}
 
 	public void addUser(WPUser user) {

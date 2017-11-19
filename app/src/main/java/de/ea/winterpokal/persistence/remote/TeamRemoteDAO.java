@@ -19,18 +19,25 @@ public class TeamRemoteDAO implements ITeamDAO {
 		String responseString = RemoteRequest.DoRequest(Constants.HOST_NAME + "teams/get/" + id + ".json", RequestType.GET);
 
 		Gson gson = new Gson();
-		Response<TeamObject> response = gson.fromJson(responseString, new TypeToken<Response<TeamObject>>() {
-		}.getType());
+		Response<TeamObject> response = null;
 
-		if ("OK".equals(response.getStatus())) {
-			WPTeam team = response.getData().getTeam();
-			team.setUsers(response.getData().getUsers());
-			if (team.getUsers() != null)
-				for (WPUser user : team.getUsers())
-					user.setTeam(team);
-			team.setDuration(team.getDurationComputed());
-			team.setPoints(team.getPointsComputed());
-			return team;
+		try {
+			response = gson.fromJson(responseString, new TypeToken<Response<TeamObject>>() {}.getType());
+		}catch (Exception ex) {
+			Log.e("ParseTeamResponseFailed", ex.getMessage());
+			return null;
+		}
+
+		if (response != null && "OK".equals(response.getStatus())) {
+			TeamObject data = response.getData();
+			if(data != null) {
+				WPTeam team = data.getTeam();
+				team.setUsers(data.getUsers());
+
+				return team;
+			}else {
+				Log.e("RetrieveTeamFailed", "invalidData:"+responseString);
+			}
 		} else {
 			Log.e("RetrieveTeamFailed", responseString);
 		}

@@ -23,12 +23,22 @@ public class UserRemoteDAO implements IUserDAO {
 		String responseString = RemoteRequest.DoRequest(Constants.HOST_NAME + "users/get/" + id + ".json", RequestType.GET);
 
 		Gson gson = new Gson();
-		UserResponse response = gson.fromJson(responseString, UserResponse.class);
+		UserResponse response = null;
+		try {
+			response = gson.fromJson(responseString, UserResponse.class);
+		}catch (Exception ex) {
+			Log.e("UserRetrieveFailed", "ParseError:" + ex.getMessage() );
+		}
 
-		if ("OK".equals(response.getStatus())) {
-			WPUser user = response.getData().getUser();
-			user.setTeam(response.getData().getTeam());
-			return user;
+		if (response != null && "OK".equals(response.getStatus())) {
+			UserData userData = response.getData();
+			if(userData != null) {
+				WPUser user = userData.getUser();
+				user.setTeam(userData.getTeam());
+				return user;
+			} else {
+				Log.e("UserRetrieveFailed", "NoUserData:"+responseString);
+			}
 		} else {
 			Log.e("UserRetrieveFailed", responseString);
 		}
@@ -60,22 +70,34 @@ public class UserRemoteDAO implements IUserDAO {
 
 	public static WPUser getMe() {
 		String responseString = RemoteRequest.DoRequest(Constants.HOST_NAME + "users/me.json", RequestType.GET);
+		if(responseString!=null) {
+			Gson gson = new Gson();
 
-		Gson gson = new Gson();
-		UserResponse response = gson.fromJson(responseString, UserResponse.class);
-
-		if ("OK".equals(response.getStatus())) {
-			WPUser user = response.getData().getUser();
-			user.setTeam(response.getData().getTeam());
-			if (user.getTeam() != null) {
-				WPTeam team = App.getInstance().getDAOFactory().getTeamDAO().get(user.getTeam().getId());
-				user.setTeam(team);
+			UserResponse response = null;
+			try {
+			 	response= gson.fromJson(responseString, UserResponse.class);
+			} catch(Exception ex) {
+				Log.e("UserRetrieveFailed", "parseResonseFailed:" + ex.getMessage());
 			}
-			return user;
-		} else {
-			Log.e("UserRetrieveFailed", responseString);
+			if (response!=null && "OK".equals(response.getStatus())) {
+				UserData data = response.getData();
+				if(data!=null) {
+					WPUser user = data.getUser();
+					user.setTeam(data.getTeam());
+					if (user.getTeam() != null) {
+						WPTeam team = App.getInstance().getDAOFactory().getTeamDAO().get(user.getTeam().getId());
+						user.setTeam(team);
+					}
+					return user;
+				} else {
+					Log.e("UserRetrieveFailed", "noValidData:"+responseString);
+				}
+			} else {
+				Log.e("UserRetrieveFailed", responseString);
+			}
+		}else {
+			Log.e("UserRetrieveFailed","NoResponse");
 		}
-
 		return null;
 	}
 
