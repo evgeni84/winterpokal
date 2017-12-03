@@ -9,108 +9,90 @@ import java.util.Map.Entry;
 
 import de.ea.winterpokal.model.SportTypes;
 import de.ea.winterpokal.model.WPEntry;
-import de.ea.winterpokal.model.WPUser;
 import de.ea.winterpokal.model.WinterpokalException;
 import de.ea.winterpokal.persistence.IEntryDAO;
 import de.ea.winterpokal.persistence.remote.DAORemoteException;
-import de.ea.winterpokal.utils.web.auth.Auth;
 
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.app.DatePickerDialog.OnDateSetListener;
-import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-public class AddEntryFragment extends Fragment implements OnTimeSetListener {
+public class AddEntryActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
 
 	EditText etDuration = null;
 	private int hours = 0;
 	private int minutes = 0;
+	private FloatingActionButton fabSaveEntry;
+
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		setHasOptionsMenu(true);
-		View v = inflater.inflate(R.layout.addentry, null);
-		return v;
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.addentry);
+
+		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+		fabSaveEntry = (FloatingActionButton) findViewById(R.id.fabSaveEntry);
+		fabSaveEntry.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				persistNewEntry();
+			}
+		});
+		init();
 	}
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+
+	void init(){
+
 		createSportTypesDropDown();
-
-
-		etDuration = (EditText) getView().findViewById(R.id.etDuration);
+		etDuration = (EditText) findViewById(R.id.etDuration);
 		etDuration.setInputType(InputType.TYPE_NULL);
+		final TimePickerDialog.OnTimeSetListener foo = this;
 		etDuration.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
 				CustomDialogFragment dialog = new CustomDialogFragment();
-                dialog.setTargetFragment(AddEntryFragment.this, 0);
 				Bundle bundle = new Bundle();
 				bundle.putInt("dialog_id", CustomDialogFragment.TIME_PICKER);
 				bundle.putInt("hour", hours);
 				bundle.putInt("minute", minutes);
 				dialog.setArguments(bundle);
-				dialog.show(getFragmentManager(), "dialog");
+				dialog.setTimeSetListener(foo);
+				dialog.show(getSupportFragmentManager(), "dialog");
 			}
 		});
 	}
 
 	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		super.onCreateOptionsMenu(menu, inflater);
-		WPUser authUser = Auth.getUser();
-		if (authUser == null) {
-			return;
-		}
-		inflater.inflate(R.menu.activity_addentry, menu);
-	}
-	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// handle item selection
 		switch (item.getItemId()) {
-			case R.id.action_add_entry_save:
-				persistNewEntry();
-			case R.id.action_add_entry_cancel:
-                new AlertDialog.Builder(this.getContext()).setTitle(R.string.add_entry_cancel_confirm_title).
-                        setPositiveButton(R.string.add_entry_cancel_confirm_button_ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                finish();
-                            }
-                        }). setNegativeButton(R.string.add_entry_cancel_confirm_button_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                    }
-                });
-
-			default:
-				return super.onOptionsItemSelected(item);
+			// Respond to the action bar's Up/Home button
+			case android.R.id.home:
+				NavUtils.navigateUpFromSameTask(this);
+				return true;
 		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	private void persistNewEntry(){
@@ -118,7 +100,7 @@ public class AddEntryFragment extends Fragment implements OnTimeSetListener {
 			doAddWPEntry();
 		} catch (Exception ex) {
 			Log.e("addEntry", ex.getMessage(), ex);
-			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
 			// set title
 			alertDialogBuilder.setTitle(R.string.error);
@@ -132,28 +114,28 @@ public class AddEntryFragment extends Fragment implements OnTimeSetListener {
 			alertDialog.show();
 			return;
 		}
-		Toast.makeText(getActivity(), getString(R.string.entrySaved), Toast.LENGTH_LONG).show();
-		finish();
+		Toast.makeText(this, getString(R.string.entrySaved), Toast.LENGTH_LONG).show();
+		closeMe();
 	}
 
 	private void createSportTypesDropDown() {
-		final Spinner spinner = (Spinner) getView().findViewById(R.id.spSportType);
+		final Spinner spinner = (Spinner) findViewById(R.id.spSportType);
 
 		List<SportTypes> sportTypes = new ArrayList<SportTypes>(Arrays.asList(SportTypes.values()));
 		sportTypes.remove(SportTypes.total);
-		spinner.setAdapter(new ArrayAdapter<SportTypes>(getActivity(), android.R.layout.simple_spinner_item, sportTypes));
+		spinner.setAdapter(new ArrayAdapter<SportTypes>(this, android.R.layout.simple_spinner_dropdown_item, sportTypes));
 	}
 
-	private void finish() {
-		getActivity().getSupportFragmentManager().popBackStack();
+	private void closeMe() {
+		onBackPressed();
 	}
 
 	private void doAddWPEntry() throws Exception {
-		DatePicker date = (DatePicker) getView().findViewById(R.id.dpActivityDate);
-		EditText notes = (EditText) getView().findViewById(R.id.etNotes);
-		EditText dur = (EditText) getView().findViewById(R.id.etDuration);
-		EditText dist = (EditText) getView().findViewById(R.id.etDistance);
-		Spinner sp = (Spinner) getView().findViewById(R.id.spSportType);
+		DatePicker date = (DatePicker) findViewById(R.id.dpActivityDate);
+		EditText notes = (EditText) findViewById(R.id.etNotes);
+		EditText dur = (EditText) findViewById(R.id.etDuration);
+		EditText dist = (EditText) findViewById(R.id.etDistance);
+		Spinner sp = (Spinner) findViewById(R.id.spSportType);
 
 		int year = date.getYear();
 		int month = date.getMonth();

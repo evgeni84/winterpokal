@@ -16,25 +16,30 @@ public class CustomDialogFragment extends DialogFragment {
     public static final int DATE_PICKER = 1;
     public static final int TIME_PICKER = 2;
     public final int DIALOG = 3;
-
-    private Fragment mCurrentFragment;
-
+    private TimePickerDialog.OnTimeSetListener mTimeSetListener;
+    private DatePickerDialog.OnDateSetListener mDateSetListener;
     public CustomDialogFragment(){
 
     }
 
+    public void setDateSetListener(DatePickerDialog.OnDateSetListener listener) {
+        mDateSetListener= listener;
+    }
+
+    public void setTimeSetListener(TimePickerDialog.OnTimeSetListener listener) {
+        mTimeSetListener = listener;
+    }
 
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Bundle bundle = new Bundle();
         bundle = getArguments();
         int id = bundle.getInt("dialog_id");
-        mCurrentFragment = getTargetFragment();
         switch (id) {
             case DATE_PICKER:
-                return new DatePickerDialog(getActivity(), (DatePickerDialog.OnDateSetListener) mCurrentFragment, bundle.getInt("year"), bundle.getInt("month"), bundle.getInt("day"));
+                return new DatePickerDialog(getActivity(),  mDateSetListener, bundle.getInt("year"), bundle.getInt("month"), bundle.getInt("day"));
 
             case TIME_PICKER:
-                TimePickerDialog dlg = new TimePickerDialog(getActivity(), (TimePickerDialog.OnTimeSetListener) mCurrentFragment, bundle.getInt("hour"), bundle.getInt("minute"), true);
+                TimePickerDialog dlg = new TimePickerDialog(getActivity(), mTimeSetListener, bundle.getInt("hour"), bundle.getInt("minute"), true);
                 dlg.setTitle(R.string.duration);
 
                 return dlg;

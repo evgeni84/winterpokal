@@ -1,8 +1,6 @@
 package de.ea.winterpokal;
 
 import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import de.ea.winterpokal.model.WPEntry;
@@ -11,15 +9,14 @@ import de.ea.winterpokal.model.WPUser;
 import de.ea.winterpokal.utils.web.auth.Auth;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
@@ -34,11 +31,10 @@ public class UserFragment extends ListFragment implements OnClickListener {
 	private TextView teamLabel, pointsLabel, userNameLabel, durationLabel;
 	private WPUser user;
 	private ProgressDialog pDialog;
-
+	private FloatingActionButton fabAddEntry;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setHasOptionsMenu(true);
 	}
 
 	@Override
@@ -52,35 +48,46 @@ public class UserFragment extends ListFragment implements OnClickListener {
 		durationLabel = (TextView) v.findViewById(R.id.tvTotalTime);
 		teamContainer.setOnClickListener(this);
 
+		fabAddEntry = (FloatingActionButton) v.findViewById(R.id.fabAddEntry);
+		fabAddEntry.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Intent intent = new Intent(getActivity(), AddEntryActivity.class);
+				getActivity().startActivity(intent);
+			}
+		});
+
 		return v;
 	}
 
 	public void onClick(View v) {
 		if (user != null && user.getTeam() != null) {
-			TeamFragment tf = new TeamFragment();
-			Bundle bundle = new Bundle();
-			bundle.putSerializable("team", user.getTeam());
-			tf.setArguments(bundle);
-			getFragmentManager().beginTransaction().replace(R.id.content_frame, tf).addToBackStack(null).commit();
-
+			Intent intent  =new Intent(getActivity(), TeamActivity.class);
+			intent.putExtra("team", user.getTeam());
+			getActivity().startActivity(intent);
 		}
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-
 		user = null;
-
+		boolean me = false;
 		Object userO = null;
-
 		if (getArguments() != null)
 			userO = getArguments().get("user");
-		if (userO == null)
+		if (userO == null) {
 			user = Auth.getUser();
+			me = true;
+			MainActivity activity = (MainActivity)getActivity();
+			if (activity != null) {
+				//activity.hideUpButton();
+			}
+		}
 		else if (userO instanceof WPUser) {
 			user = (WPUser) userO;
 		}
+		fabAddEntry.setVisibility(me? View.VISIBLE: View.INVISIBLE);
 		if (user != null)
 			new GetDataTask().execute(user);
 	}
@@ -95,31 +102,6 @@ public class UserFragment extends ListFragment implements OnClickListener {
 
 		ArrayAdapter<WPEntry> adapter = new MyEntryArrayAdapter(this.getActivity(), entries);
 		setListAdapter(adapter);
-	}
-
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		super.onCreateOptionsMenu(menu, inflater);
-
-		WPUser authUser = Auth.getUser();
-		if (authUser == null || user == null || authUser.getId() != user.getId()) {
-			return;
-		}
-		inflater.inflate(R.menu.activity_user, menu);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// handle item selection
-		switch (item.getItemId()) {
-		case R.id.action_add_entry:
-			getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new AddEntryFragment()).addToBackStack(null).commit();
-
-			// do s.th.
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
 	}
 
 	class GetDataTask extends AsyncTask<WPUser, Void, Void> {
@@ -175,7 +157,6 @@ public class UserFragment extends ListFragment implements OnClickListener {
 			return null;
 		}
 	}
-
 }
 
 class MyEntryArrayAdapter extends ArrayAdapter<WPEntry> {

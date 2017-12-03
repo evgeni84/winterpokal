@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView  android:layout_width="match_parent"
-    android:layout_height="match_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+<android.support.design.widget.CoordinatorLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="fill_horizontal"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical" >
 
     <LinearLayout android:layout_width="fill_parent"
         android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"
-
+        android:id="@+id/outerContainer"
         android:orientation="vertical">
-
+        <!-- The ActionBar displayed at the top -->
+        <include
+            layout="@layout/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -101,4 +111,15 @@
             <requestFocus />
         </EditText>
     </LinearLayout>
-</ScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabSaveEntry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_content_save"
+        app:backgroundTint="@android:color/holo_blue_light"
+        app:layout_anchor="@id/outerContainer"
+        app:layout_anchorGravity="bottom|right|end" />
+</android.support.design.widget.CoordinatorLayout>

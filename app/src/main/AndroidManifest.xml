@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.ea.winterpokal"
-    android:versionCode="2006"
-    android:versionName="2.1.0" >
+    android:versionCode="2008"
+    android:versionName="3.0.0" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -20,14 +20,13 @@
         android:name="de.ea.winterpokal.App"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.MyCompatTheme" >
+        android:theme="@style/AppTheme.NoActionBar" >
         <activity
             android:name="de.ea.winterpokal.StartupActivity"
             android:label="@string/app_name"
             android:noHistory="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -41,6 +40,37 @@
         <activity
             android:name="de.ea.winterpokal.MainActivity"
             android:label="@string/app_name" >
+        </activity>
+
+        <activity
+            android:name="de.ea.winterpokal.TeamActivity"
+            android:label="Team"
+            android:parentActivityName="de.ea.winterpokal.MainActivity">
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.ea.winterpokal.MainActivity" />
+        </activity>
+
+        <activity
+            android:name="de.ea.winterpokal.UserActivity"
+            android:label="User"
+            android:parentActivityName="de.ea.winterpokal.MainActivity">
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.ea.winterpokal.MainActivity" />
+        </activity>
+
+        <activity
+            android:name="de.ea.winterpokal.AddEntryActivity"
+            android:label="Eintrag hinzufügen" android:launchMode="singleTop"
+            android:parentActivityName="de.ea.winterpokal.MainActivity">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.ea.winterpokal.MainActivity" />
         </activity>
     </application>
 

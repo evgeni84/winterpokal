@@ -55,6 +55,10 @@
     <string name="add_entry_cancel_confirm_title">Eintrag verwerfen?</string>
     <string name="add_entry_cancel_confirm_button_ok">OK</string>
     <string name="add_entry_cancel_confirm_button_cancel">Abbrechen</string>
+    <string name="ranking_tab_header_users">Benutzer</string>
+    <string name="ranking_tab_header_teams">Teams</string>
+    <string name="favorites_tab_header_users">Benutzer</string>
+    <string name="favorites_tab_header_teams">Teams</string>
     <string-array name="object_type">
         <item>User</item>
         <item>Team</item>

@@ -10,40 +10,44 @@ import de.ea.winterpokal.model.WPTeam;
 import de.ea.winterpokal.model.WPUser;
 import de.ea.winterpokal.persistence.ITeamDAO;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class TeamFragment extends ListFragment {
+public class TeamActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
 	private TextView tvTeam = null;
 	private TextView tvPoints = null;
 	private TextView tvTime = null;
+	private ListView teamEntryList = null;
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.team, null);
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.team);
+		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-		tvTeam = (TextView) v.findViewById(R.id.tvTeam);
-		tvPoints = (TextView) v.findViewById(R.id.tvTeamPoints);
-		tvTime = (TextView) v.findViewById(R.id.tvTeamDuration);
-
-		return v;
+		tvTeam = (TextView) findViewById(R.id.tvTeam);
+		tvPoints = (TextView) findViewById(R.id.tvTeamPoints);
+		tvTime = (TextView) findViewById(R.id.tvTeamDuration);
+		teamEntryList = (ListView)findViewById(R.id.teamEntryList);
+		teamEntryList.setOnItemClickListener(this);
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		Bundle b = getArguments();
-		if (b == null) {
-			return;
-		}
-		Object teamO = getArguments().get("team");
+		Object teamO = getIntent().getSerializableExtra("team");
 		if (teamO != null && (teamO instanceof WPTeam)) {
 			updateUI((WPTeam) teamO);
 		}
@@ -79,26 +83,23 @@ public class TeamFragment extends ListFragment {
 		}
 
 		);
-		ArrayAdapter<WPUser> adapter = new WPUserArrayAdapter(this.getActivity(), users);
-		setListAdapter(adapter);
+		ArrayAdapter<WPUser> adapter = new WPUserArrayAdapter(this, users);
+		teamEntryList.setAdapter(adapter);
 	}
-
 	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-		WPUser item = (WPUser) getListAdapter().getItem(position);
+	public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+		WPUser item = (WPUser) teamEntryList.getAdapter().getItem(i);
+		Intent intent = new Intent(this, UserActivity.class);
+		intent.putExtra("user", item);
+		startActivity(intent);
 
-		Bundle bundle = new Bundle();
-		bundle.putSerializable("user", item);
-		UserFragment uf = new UserFragment();
-		uf.setArguments(bundle);
-		getFragmentManager().beginTransaction().replace(R.id.content_frame, uf).addToBackStack(null).commit();
 	}
 }
 
 // TODO refactoring to generic class with subclassing and overwriting view @see
 // ListEntryActivity for similar adapter
 // holder
-class WPUserArrayAdapter extends ArrayAdapter<WPUser> {
+class WPUserArrayAdapter2 extends ArrayAdapter<WPUser> {
 	private final Activity context;
 	private final List<WPUser> users;
 
@@ -109,7 +110,7 @@ class WPUserArrayAdapter extends ArrayAdapter<WPUser> {
 
 	}
 
-	public WPUserArrayAdapter(Activity context, List<WPUser> users) {
+	public WPUserArrayAdapter2(Activity context, List<WPUser> users) {
 		super(context, R.layout.teammemberitem, users);
 		this.context = context;
 		this.users = users;

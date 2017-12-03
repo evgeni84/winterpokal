@@ -1,95 +1,113 @@
 package de.ea.winterpokal;
 
-import java.util.ArrayList;
-
-import de.ea.winterpokal.model.WPTeam;
-import de.ea.winterpokal.model.WPUser;
-import de.ea.winterpokal.utils.nav.*;
-import de.ea.winterpokal.utils.web.auth.Auth;
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
-public class MainActivity extends AbstractNavDrawerActivity {
+import de.ea.winterpokal.utils.web.auth.Auth;
+
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+	NavigationView navigationView;
+
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (savedInstanceState == null) {
-			getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new UserFragment()).commit();
-		}
-	}  
+		setContentView(R.layout.activity_main);
+		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
 
-	
-	@Override
-	protected NavDrawerActivityConfiguration getNavDrawerConfiguration() {
 
-		ArrayList<NavDrawerItem> menuArray = new ArrayList<NavDrawerItem>();
-		menuArray.add(NavMenuItem.create(101, "Home", "home", true, this));
-		WPUser user = Auth.getUser();
-		if (user != null) {
-			if (user.getTeam() != null) {
-				menuArray.add(NavMenuItem.create(103, "Mein Team", "team", true, this));
-			}
-		}
-		// NavMenuSection.create( 100, "Demos"),
-		menuArray.add(NavMenuItem.create(102, "Ranking", "podium", true, this));
-		// NavMenuSection.create(200, "General"),
+		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.drawer_open, R.string.drawer_close);
+		drawer.addDrawerListener(toggle);
+		toggle.syncState();
 
-		menuArray.add(NavMenuItem.create(104, "Favoriten", "star", true, this));
-		menuArray.add(NavMenuItem.create(105, "Abmelden", "logout", true, this));
-		NavDrawerActivityConfiguration navDrawerActivityConfiguration = new NavDrawerActivityConfiguration();
-		navDrawerActivityConfiguration.setMainLayout(R.layout.activity_main);
-		navDrawerActivityConfiguration.setDrawerLayoutId(R.id.drawer_layout);
-		navDrawerActivityConfiguration.setLeftDrawerId(R.id.left_drawer);
+		navigationView = (NavigationView) findViewById(R.id.nav_view);
+		navigationView.setNavigationItemSelectedListener(this);
+		setFirstItemNavigationView();
+	}
 
-		NavDrawerItem[] menu = menuArray.toArray(new NavDrawerItem[] {});
-
-		navDrawerActivityConfiguration.setNavItems(menu);
-		navDrawerActivityConfiguration.setDrawerShadow(R.drawable.drawer_shadow);
-		navDrawerActivityConfiguration.setDrawerOpenDesc(R.string.drawer_open);
-		navDrawerActivityConfiguration.setDrawerCloseDesc(R.string.drawer_close);
-		navDrawerActivityConfiguration.setBaseAdapter(new NavDrawerAdapter(this, R.layout.navdrawer_item, menu));
-		return navDrawerActivityConfiguration;
+	private void setFirstItemNavigationView() {
+		navigationView.setCheckedItem(R.id.nav_home);
+		onNavigationItemSelected(navigationView.getMenu().findItem(R.id.nav_home));
 	}
 
 	@Override
-	protected void onNavItemSelected(int id) {
-		switch ((int) id) {
-		case 101:
-			getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new UserFragment()).commit();
-			break;
-		case 102:
-			getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new RankingFragment()).commit();
-			break;
-		case 103:
-			WPUser user = Auth.getUser();
-			if (user != null) {
-
-				WPTeam team = user.getTeam();
-				if (team != null) {
-					TeamFragment tf = new TeamFragment();
-					Bundle b = new Bundle();
-					b.putSerializable("team", team);
-					tf.setArguments(b);
-					getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, tf).commit();
-				}
+	public void onBackPressed() {
+		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+		if (drawer.isDrawerOpen(GravityCompat.START)) {
+			drawer.closeDrawer(GravityCompat.START);
+		} else {
+			FragmentManager fragmentManager = getSupportFragmentManager();
+			if (fragmentManager.getBackStackEntryCount() > 1) {
+				fragmentManager.popBackStackImmediate();
+			} else {
+				finish();
 			}
-			break;
+		}
+	}
 
-		case 104:
-			getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new FavoriteFragment()).commit();
-			break;
-		
-		case 105:
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		switch (item.getItemId()) {
+			// Respond to the action bar's Up/Home button
+			case android.R.id.home:
+				onBackPressed();
+				//noinspection SimplifiableIfStatement
+			case R.id.action_settings:
+				return true;
+		}
+
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public boolean onNavigationItemSelected(MenuItem item) {
+		// Handle navigation view item clicks here.
+		int id = item.getItemId();
+		Class fragmentClass = null;
+		if (id == R.id.nav_home) {
+			fragmentClass = UserFragment.class;
+		} else if (id == R.id.nav_ranking) {
+			fragmentClass = RankingFragment.class;
+		} else if (id == R.id.nav_favorites) {
+			fragmentClass = FavoriteFragment.class;
+		} else if (id == R.id.nav_logout) {
 			if(Auth.logout()){
 				Intent newActivity = new Intent(this, StartupActivity.class);
 				newActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				this.startActivity(newActivity);
 				finish();
+				return true;
 			}
-			break;
 		}
-	}
 
-	
+		if(fragmentClass!=null) {
+			Fragment fragment = null;
+			try {
+				fragment = (Fragment) fragmentClass.newInstance();
+				FragmentManager fragmentManager = getSupportFragmentManager();
+				fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit();
+				item.setChecked(true);
+				setTitle(item.getTitle());
+			} catch (Exception e) {
+			}
+		}
+
+		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+		drawer.closeDrawer(GravityCompat.START);
+		return true;
+	}
 }

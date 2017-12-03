@@ -1,5 +1,6 @@
 package de.ea.winterpokal;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,43 +14,36 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.ListFragment;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
+import android.widget.AbsListView;
+import android.widget.Adapter;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
+
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class RankingFragment extends ListFragment implements OnClickListener, OnItemSelectedListener {
+public class RankingFragment extends Fragment implements AdapterView.OnItemClickListener,  TabHost.OnTabChangeListener, AbsListView.OnScrollListener {
 	private static List<WPRanking> entries = new ArrayList<WPRanking>();
 
 	private int limit = 50;
 	private int pointer = 0;
 
 	private boolean showTeamRanking = false;
-
-	private Button bLoadMore;
-
 	private RankingArrayAdapter adapter;
 
 	private LoadRankingDataTask mTask = null;
@@ -58,6 +52,10 @@ public class RankingFragment extends ListFragment implements OnClickListener, On
 	private int mSpinnerInitializedCount = 0;
 	private int mPos = 0;
 
+	private final static String TAB_USER ="tUser";
+    private final static String TAB_TEAM ="tTeam";
+    ListView lvTeams, lvUsers;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -65,23 +63,47 @@ public class RankingFragment extends ListFragment implements OnClickListener, On
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.ranking, null);
+	public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
+		final View v = inflater.inflate(R.layout.ranking, null);
 
-		bLoadMore = new Button(this.getActivity());
-		bLoadMore.setText(R.string.loadMore);
-		bLoadMore.setOnClickListener(this);
+        TabHost tabHost = (TabHost)v.findViewById(android.R.id.tabhost);
+        tabHost.setup();
+        tabHost.addTab(tabHost.newTabSpec(TAB_USER).setIndicator(getResources().getString(R.string.ranking_tab_header_users)).setContent(R.id.ranking_list_user));
+        tabHost.addTab(tabHost.newTabSpec(TAB_TEAM).setIndicator(getResources().getString(R.string.ranking_tab_header_teams)).setContent(R.id.ranking_list_team));
+        tabHost.setOnTabChangedListener(this);
+
+        lvTeams = v.findViewById(R.id.ranking_list_team);
+        lvUsers = v.findViewById(R.id.ranking_list_user);
+
+        lvTeams.setOnScrollListener(this);
+        lvUsers.setOnScrollListener(this);
+
 		return v;
 	}
+
+	private ListView getListView() {
+	    return showTeamRanking ? lvTeams : lvUsers;
+	}
+
+	private void setListAdapter(ArrayAdapter<?> adapter) {
+	    getListView().setAdapter(adapter);
+    }
+
+    private Adapter getListAdapter() {
+	    return getListView().getAdapter();
+    }
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+        registerForContextMenu(lvUsers);
+        registerForContextMenu(lvTeams);
+        /*
 		getListView().addFooterView(bLoadMore);
-		registerForContextMenu(getListView());
-		if (entries != null)
-			entries.clear();
-		pointer = 0;
+		*/
+        if (entries != null)
+            entries.clear();
+        pointer = 0;
 	}
 
 	@Override
@@ -89,7 +111,6 @@ public class RankingFragment extends ListFragment implements OnClickListener, On
 		super.onResume();
 		adapter = new RankingArrayAdapter(this.getActivity(), entries);
 		setListAdapter(adapter);
-
 		LaunchTaskOrDoNothingIfRunning();
 	}
 
@@ -99,78 +120,31 @@ public class RankingFragment extends ListFragment implements OnClickListener, On
 			mTask.execute();
 		}
 	}
-
-	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-		WPRanking item = (WPRanking) getListAdapter().getItem(position);
-
-		Fragment f = null;
-		Bundle bundle = new Bundle();
-		if (showTeamRanking) {
-			bundle.putSerializable("team", item.getTeam());
-			f = new TeamFragment();
-		} else {
-
-			bundle.putSerializable("user", item.getUser());
-			f = new UserFragment();
-		}
-		f.setArguments(bundle);
-		getFragmentManager().beginTransaction().replace(R.id.content_frame, f).addToBackStack(null).commit();
-	}
+        @Override
+        public void onItemClick(AdapterView<?> var1, View var2, int position, long var4) {
+            WPRanking item = (WPRanking) getListAdapter().getItem(position);
+            Class c = null;
+            Bundle bundle = new Bundle();
+            String keyword = null;
+            Serializable object = null;
+            if (showTeamRanking) {
+                keyword = "team";
+                object = item.getTeam();
+                c = TeamActivity.class;
+            } else {
+                keyword = "user";
+                object = item.getUser();
+                c = UserActivity.class;
+            }
+            Intent intent = new Intent(getActivity(), c);
+            if (keyword != null) {
+                intent.putExtra(keyword, object);
+                getActivity().startActivity(intent);
+            }
+        }
 
 	public void onClick(View v) {
 		LaunchTaskOrDoNothingIfRunning();
-	}
-
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		super.onCreateOptionsMenu(menu, inflater);
-		inflater.inflate(R.menu.activity_ranking, menu);
-		MenuItem mi = menu.findItem(R.id.menuObjectType);
-		if (mi == null) {
-			return;
-		}
-		View v = MenuItemCompat.getActionView(mi);
-		if (v == null) {
-			return;
-		}
-		mSpinner = (Spinner) v.findViewById(R.id.objectTypeFilter);
-		if (mSpinner == null) {
-			return;
-		}
-		if (mSpinner != null) {
-			SpinnerAdapter mSpinnerAdapter = ArrayAdapter.createFromResource(((ActionBarActivity) getActivity()).getSupportActionBar().getThemedContext(), R.array.object_type,
-					android.R.layout.simple_expandable_list_item_1); // create
-																		// the
-																		// adapter
-																		// from
-																		// a
-																		// StringArray
-			mSpinner.setAdapter(mSpinnerAdapter); // set the adapter
-			mSpinner.setOnItemSelectedListener((OnItemSelectedListener) this);
-		}
-	}
-
-	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-		if (mSpinnerInitializedCount < 1) {
-			mSpinnerInitializedCount++;
-		} else if (position != mPos) {
-			mPos = position;
-			String o = (String) parent.getItemAtPosition(position);
-			if ("Team".equalsIgnoreCase(o)) {
-				showTeamRanking = true;
-			} else if ("User".equalsIgnoreCase(o)) {
-				showTeamRanking = false;
-			}
-			entries.clear();
-			pointer = 0;
-			LaunchTaskOrDoNothingIfRunning();
-		}
-	}
-
-	public void onNothingSelected(AdapterView<?> parent) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -217,7 +191,37 @@ public class RankingFragment extends ListFragment implements OnClickListener, On
 		}
 	}
 
-	class LoadRankingDataTask extends AsyncTask<Void, Void, Void> {
+    @Override
+    public void onTabChanged(String s) {
+        switch (s) {
+            case TAB_USER:
+                showTeamRanking = false;
+                break;
+            case TAB_TEAM:
+                showTeamRanking = true;
+                break;
+                default:
+                    return;
+        }
+        setListAdapter(adapter);
+        entries.clear();
+        pointer = 0;
+        LaunchTaskOrDoNothingIfRunning();
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        if (firstVisibleItem + visibleItemCount == totalItemCount && totalItemCount != 0) {
+                LaunchTaskOrDoNothingIfRunning();
+        }
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        //nothing to do here
+    }
+
+    class LoadRankingDataTask extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog pDialog;
 
 		private boolean teamRanking;
