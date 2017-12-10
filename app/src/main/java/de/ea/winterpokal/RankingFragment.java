@@ -38,13 +38,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class RankingFragment extends Fragment implements AdapterView.OnItemClickListener,  TabHost.OnTabChangeListener, AbsListView.OnScrollListener {
-	private static List<WPRanking> entries = new ArrayList<WPRanking>();
+	private List<WPRanking> entriesUser = new ArrayList<WPRanking>();
+	private List<WPRanking> entriesTeam = new ArrayList<WPRanking>();
 
 	private int limit = 50;
-	private int pointer = 0;
+	private int pointerUser = 0;
+	private int pointerTeam = 0;
 
 	private boolean showTeamRanking = false;
-	private RankingArrayAdapter adapter;
+	private RankingArrayAdapter adapterUser;
+	private RankingArrayAdapter adapterTeam;
 
 	private LoadRankingDataTask mTask = null;
 	private Spinner mSpinner = null;
@@ -60,6 +63,36 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemClick
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
+	}
+
+	private ArrayAdapter<WPRanking> getAdapter() {
+		return showTeamRanking ? adapterTeam : adapterUser;
+	}
+
+	private void setListAdapter(ArrayAdapter<?> adapter) {
+		getListView().setAdapter(adapter);
+	}
+
+	private List<WPRanking> getEntries() {
+		return showTeamRanking ? entriesTeam : entriesUser;
+	}
+
+	private void appendEntries(List<WPRanking> items) {
+		List<WPRanking> existing = showTeamRanking ? entriesTeam : entriesUser ;
+		existing.addAll(items);
+		if(showTeamRanking) {
+			pointerTeam += items.size();
+		}
+		else {
+			pointerUser +=items.size();
+		}
+		getAdapter().notifyDataSetChanged();
+		int pos = getListView().getFirstVisiblePosition();
+		getListView().setSelectionFromTop(pos, 0);
+	}
+
+	private ListView getListView() {
+		return showTeamRanking ? lvTeams : lvUsers;
 	}
 
 	@Override
@@ -81,36 +114,28 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemClick
 		return v;
 	}
 
-	private ListView getListView() {
-	    return showTeamRanking ? lvTeams : lvUsers;
-	}
-
-	private void setListAdapter(ArrayAdapter<?> adapter) {
-	    getListView().setAdapter(adapter);
-    }
-
-    private Adapter getListAdapter() {
-	    return getListView().getAdapter();
-    }
-
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-        registerForContextMenu(lvUsers);
-        registerForContextMenu(lvTeams);
-        /*
-		getListView().addFooterView(bLoadMore);
-		*/
-        if (entries != null)
-            entries.clear();
-        pointer = 0;
+		registerForContextMenu(lvUsers);
+		registerForContextMenu(lvTeams);
+
+		if (entriesUser != null)
+			entriesUser.clear();
+		pointerUser = 0;
+		if (entriesTeam != null)
+			entriesTeam.clear();
+		pointerTeam = 0;
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		adapter = new RankingArrayAdapter(this.getActivity(), entries);
-		setListAdapter(adapter);
+		adapterUser = new RankingArrayAdapter(getActivity(), entriesUser);
+		adapterTeam = new RankingArrayAdapter(getActivity(), entriesTeam);
+		showTeamRanking = false;
+		lvUsers.setAdapter(adapterUser);
+		lvTeams.setAdapter(adapterTeam);
 		LaunchTaskOrDoNothingIfRunning();
 	}
 
@@ -122,7 +147,7 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemClick
 	}
         @Override
         public void onItemClick(AdapterView<?> var1, View var2, int position, long var4) {
-            WPRanking item = (WPRanking) getListAdapter().getItem(position);
+            WPRanking item = (WPRanking) getAdapter().getItem(position);
             Class c = null;
             Bundle bundle = new Bundle();
             String keyword = null;
@@ -165,14 +190,13 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemClick
 				AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 				makeFavorite(info.position);
 				return true;
-
 			}
 		}
 		return false;
 	}
 
 	private void makeFavorite(int positionInAdapter) {
-		WPRanking ranking = adapter.getItem(positionInAdapter);
+		WPRanking ranking = getAdapter().getItem(positionInAdapter);
 		if (ranking == null) {
 			return;
 		}
@@ -203,9 +227,6 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemClick
                 default:
                     return;
         }
-        setListAdapter(adapter);
-        entries.clear();
-        pointer = 0;
         LaunchTaskOrDoNothingIfRunning();
     }
 
@@ -245,14 +266,8 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemClick
 		@Override
 		protected void onPostExecute(Void unused) {
 			pDialog.dismiss();
-
 			if (moreEntries != null) {
-				entries.addAll(moreEntries);
-				pointer += moreEntries.size();
-				int pos = RankingFragment.this.getListView().getFirstVisiblePosition();
-				adapter.notifyDataSetChanged();
-
-				RankingFragment.this.getListView().setSelectionFromTop(pos, 0);
+				appendEntries(moreEntries);
 			}
 		}
 
@@ -261,33 +276,24 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemClick
 
 			try {
 				if (teamRanking)
-					moreEntries = App.getInstance().getDAOFactory().getRankingDAO().getByTeams(limit, pointer);
+					moreEntries = App.getInstance().getDAOFactory().getRankingDAO().getByTeams(limit, pointerUser);
 				else
-					moreEntries = App.getInstance().getDAOFactory().getRankingDAO().get(SportTypes.total, "points", limit, pointer);
+					moreEntries = App.getInstance().getDAOFactory().getRankingDAO().get(SportTypes.total, "points", limit, pointerUser);
 			} catch (DAORemoteException ex) {
 				HashMap<String, String> errors = ex.getErrors();
 				if (errors != null) {
 					AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(RankingFragment.this.getActivity());
-
-					// set title
 					alertDialogBuilder.setTitle(R.string.error);
-
 					StringBuilder sb = new StringBuilder();
-
 					sb.append(getString(R.string.errorOnLoad) + ":\n");
 					for (Entry<String, String> entry : errors.entrySet()) {
 						sb.append(String.format("- %s (%s)\n", entry.getValue(), entry.getKey()).toString());
 					}
 					alertDialogBuilder.setMessage(sb.toString()).setCancelable(false).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-
 						public void onClick(DialogInterface dialog, int which) {
 						}
 					});
-
-					// create alert dialog
 					AlertDialog alertDialog = alertDialogBuilder.create();
-
-					// show it
 					alertDialog.show();
 				}
 
@@ -331,11 +337,12 @@ class RankingArrayAdapter extends ArrayAdapter<WPRanking> {
 
 			viewHolder.name = (TextView) rowView.findViewById(R.id.tvName);
 			viewHolder.place = (TextView) rowView.findViewById(R.id.tvPlace);
-
 			rowView.setTag(viewHolder);
 		}
 
 		ViewHolder holder = (ViewHolder) rowView.getTag();
+		System.out.println("pos:" + position);
+		System.out.println("items:" + names.size());
 		WPRanking rankingItem = names.get(position);
 		// holder.descr.setText(s.getDescription());
 
