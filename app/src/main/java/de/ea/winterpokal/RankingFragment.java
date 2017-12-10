@@ -111,6 +111,9 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemClick
         lvTeams.setOnScrollListener(this);
         lvUsers.setOnScrollListener(this);
 
+        lvTeams.setOnItemClickListener(this);
+        lvUsers.setOnItemClickListener(this);
+
 		return v;
 	}
 
