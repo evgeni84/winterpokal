@@ -17,6 +17,8 @@ import de.ea.winterpokal.utils.web.auth.Auth;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 	NavigationView navigationView;
+	DrawerLayout drawer;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		setSupportActionBar(toolbar);
 
 
-		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+		drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.drawer_open, R.string.drawer_close);
 		drawer.addDrawerListener(toggle);
 		toggle.syncState();
@@ -48,8 +50,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 			drawer.closeDrawer(GravityCompat.START);
 		} else {
 			FragmentManager fragmentManager = getSupportFragmentManager();
-			if (fragmentManager.getBackStackEntryCount() > 1) {
+			int count =fragmentManager.getBackStackEntryCount();
+			if (count > 1) {
+				String title = fragmentManager.getBackStackEntryAt(count-2).getName();
 				fragmentManager.popBackStackImmediate();
+				System.out.println("title:" + title);
+				if(title!=null) {
+					MenuItem mi =navigationView.getMenu().findItem(Integer.parseInt(title));
+					mi.setChecked(true);
+					setTitle(mi.getTitle());
+				}
 			} else {
 				finish();
 			}
@@ -99,14 +109,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 			try {
 				fragment = (Fragment) fragmentClass.newInstance();
 				FragmentManager fragmentManager = getSupportFragmentManager();
-				fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit();
+				fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(id+"").commit();
 				item.setChecked(true);
 				setTitle(item.getTitle());
 			} catch (Exception e) {
 			}
 		}
 
-		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 		drawer.closeDrawer(GravityCompat.START);
 		return true;
 	}
