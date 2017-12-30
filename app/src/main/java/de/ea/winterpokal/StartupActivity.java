@@ -53,19 +53,7 @@ public class StartupActivity extends Activity {
 
 		final Class<? extends Activity> activityClass;
 		if (!App.getInstance().isOnline()) {
-			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(StartupActivity.this);
-			// set title
-			alertDialogBuilder.setTitle(R.string.error);
-			alertDialogBuilder.setMessage(R.string.noConnection).setCancelable(false).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-
-				public void onClick(DialogInterface dialog, int which) {
-					finish();
-				}
-			});
-			// create alert dialog
-			AlertDialog alertDialog = alertDialogBuilder.create();
-			// show it
-			alertDialog.show();
+			//informing user is handled in (global) activity lifecycle handler
 			return;
 		}
 
