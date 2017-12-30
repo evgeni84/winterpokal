@@ -40,7 +40,7 @@ public class UserRemoteDAO implements IUserDAO {
 				Log.e("UserRetrieveFailed", "NoUserData:"+responseString);
 			}
 		} else {
-			Log.e("UserRetrieveFailed", responseString);
+			Log.e("UserRetrieveFailed", responseString+ "");
 		}
 
 		return null;

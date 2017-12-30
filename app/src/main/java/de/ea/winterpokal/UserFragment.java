@@ -93,6 +93,9 @@ public class UserFragment extends ListFragment implements OnClickListener {
 	}
 
 	private void updateUI(WPUser user, List<WPEntry> entries) {
+		if(user==null) {
+			return;
+		}
 		this.user = user;
 		WPTeam team = user.getTeam();
 		teamLabel.setText(team != null ? team.getName() : "");
