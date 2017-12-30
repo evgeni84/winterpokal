@@ -168,8 +168,8 @@ class MyEntryArrayAdapter extends ArrayAdapter<WPEntry> {
 	private SimpleDateFormat format;
 
 	static class ViewHolder {
-		public TextView user;
 		public TextView duration;
+		public TextView entryType;
 		public TextView points;
 		public TextView descr;
 		public TextView date;
@@ -191,19 +191,18 @@ class MyEntryArrayAdapter extends ArrayAdapter<WPEntry> {
 			LayoutInflater inflater = context.getLayoutInflater();
 			rowView = inflater.inflate(R.layout.entrylistitem, null);
 			ViewHolder viewHolder = new ViewHolder();
-			viewHolder.user = (TextView) rowView.findViewById(R.id.tvUser);
 			viewHolder.date = (TextView) rowView.findViewById(R.id.tvDate);
 			viewHolder.descr = (TextView) rowView.findViewById(R.id.tvDescr);
 			viewHolder.duration = (TextView) rowView.findViewById(R.id.tvDuration);
 			viewHolder.points = (TextView) rowView.findViewById(R.id.tvPoints);
 			viewHolder.sportType = (ImageView) rowView.findViewById(R.id.ivSportType);
+			viewHolder.entryType = (TextView)rowView.findViewById(R.id.tvEntryType);
 			rowView.setTag(viewHolder);
 		}
 
 		ViewHolder holder = (ViewHolder) rowView.getTag();
 
 		WPEntry entry = entries.get(position);
-		holder.user.setText("");
 		holder.duration.setText(entry.getDurationAsHours() + "");
 		holder.points.setText(entry.getPoints() + "");
 		holder.descr.setText(entry.getDescription());
@@ -212,19 +211,21 @@ class MyEntryArrayAdapter extends ArrayAdapter<WPEntry> {
 		switch (entry.getCategory()) {
 		case radfahren:
 			holder.sportType.setImageResource(R.drawable.cycling);
+			holder.entryType.setText(R.string.entry_type_cycling);
 			break;
 		case laufen:
 			holder.sportType.setImageResource(R.drawable.running);
+			holder.entryType.setText(R.string.entry_type_run);
 			break;
 		case skilanglauf:
 			holder.sportType.setImageResource(R.drawable.skiing);
+			holder.entryType.setText(R.string.entry_type_skiing);
 			break;
 		default:
 			holder.sportType.setImageResource(R.drawable.empty);
+			holder.entryType.setText(R.string.entry_type_other);
 			break;
 		}
-
 		return rowView;
 	}
-
 }
