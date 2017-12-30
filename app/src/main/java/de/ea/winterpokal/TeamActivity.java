@@ -62,7 +62,7 @@ public class TeamActivity extends AppCompatActivity implements AdapterView.OnIte
 				team = t;
 		}
 		tvTeam.setText(team.getName());
-		tvPoints.setText(team.getPoints() + " Punkte");
+		tvPoints.setText(team.getPoints()+"");
 		tvTime.setText(team.getDurationAsHours());
 
 		List<WPUser> users = team.getUsers();
@@ -133,7 +133,7 @@ class WPUserArrayAdapter2 extends ArrayAdapter<WPUser> {
 		WPUser user = users.get(position);
 		holder.name.setText(user.getName());
 		holder.duration.setText(user.getDurationAsHours());
-		holder.points.setText(user.getPoints() + " Punkt(e)");
+		holder.points.setText(user.getPoints() + "");
 
 		return rowView;
 	}

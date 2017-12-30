@@ -53,7 +53,7 @@ public class WPUserArrayAdapter  extends ArrayAdapter<WPUser> {
         if (team != null) {
             holder.name.setText(team.getName());
             holder.duration.setText(team.getDurationAsHours());
-            holder.points.setText(team.getPoints() + " Punkt(e)");
+            holder.points.setText(team.getPoints() + "");
         }else {
             Log.e("exo", "team is null");
         }
