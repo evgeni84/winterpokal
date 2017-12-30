@@ -26,15 +26,19 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">
 
-                <ListView android:id="@+id/favorites_list_user"
+                <ListView
+                    android:id="@+id/favorites_list_user"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    />
+                    android:divider="#ccc"
+                    android:dividerHeight="10dp" />
 
-                <ListView android:id="@+id/favorites_list_team"
+                <ListView
+                    android:id="@+id/favorites_list_team"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    />
+                    android:divider="#ccc"
+                    android:dividerHeight="10dp" />
             </FrameLayout>
         </LinearLayout>
     </TabHost>
