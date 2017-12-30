@@ -39,7 +39,7 @@ public class TeamRemoteDAO implements ITeamDAO {
 				Log.e("RetrieveTeamFailed", "invalidData:"+responseString);
 			}
 		} else {
-			Log.e("RetrieveTeamFailed", responseString);
+			Log.e("RetrieveTeamFailed", responseString+"");
 		}
 
 		return null;
