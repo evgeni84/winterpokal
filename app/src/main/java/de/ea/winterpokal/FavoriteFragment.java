@@ -214,8 +214,8 @@ public class FavoriteFragment extends Fragment implements AdapterView.OnItemClic
 	class GetDataTask extends AsyncTask<Void, Void, Void> {
 
 		private boolean teamRanking;
-		List<WPUser> userList = null;
-		List<WPTeam> teamList = null;
+		List<WPUser> userList = new ArrayList<>();
+		List<WPTeam> teamList = new ArrayList<>();
 		private ProgressDialog pDialog;
 
 

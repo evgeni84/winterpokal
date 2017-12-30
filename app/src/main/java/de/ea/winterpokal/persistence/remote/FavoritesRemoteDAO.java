@@ -31,12 +31,12 @@ public class FavoritesRemoteDAO implements IFavoritesDAO {
 		}.getType();
 		Response<List<UserObject>> response = gson.fromJson(responseString, t);
 
-		if ("OK".equals(response.getStatus())) {
+		if (response!=null && "OK".equals(response.getStatus())) {
 			for (UserObject d : response.getData()) {
 				users.add(d.getUser());
 			}
 		} else {
-			Log.e("GetUserFavoritesFailed", responseString);
+			Log.e("GetUserFavoritesFailed", responseString+ "");
 		}
 		return users;
 	}
@@ -51,7 +51,7 @@ public class FavoritesRemoteDAO implements IFavoritesDAO {
 		}.getType();
 		Response<List<TeamObject>> response = gson.fromJson(responseString, t);
 
-		if ("OK".equals(response.getStatus())) {
+		if (response !=null && "OK".equals(response.getStatus())) {
 			for (TeamObject d : response.getData()) {
 				WPTeam team = d.getTeam();
 				if(team!=null) {
@@ -60,7 +60,7 @@ public class FavoritesRemoteDAO implements IFavoritesDAO {
 				}
 			}
 		} else {
-			Log.e("GetTeamFavoritesFailed", responseString);
+			Log.e("GetTeamFavoritesFailed", responseString + "");
 		}
 		return teams;
 	}
