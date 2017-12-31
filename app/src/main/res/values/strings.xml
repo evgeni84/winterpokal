@@ -66,6 +66,7 @@
     <string name="entry_type_run">Laufen</string>
     <string name="entry_type_other">Sonstiges</string>
     <string name="entry_type_skiing">Langlauf</string>
+    <string name="ranking_entry_place">Platz</string>
     <string-array name="object_type">
         <item>User</item>
         <item>Team</item>
