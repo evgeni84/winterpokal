@@ -42,7 +42,9 @@
     <string name="entrySaveFailed">Abspeichern fehlgeschlagen</string>
     <string name="noConnection">Es besteht keine Internetverbindung.
         Bitte stelle sicher, dass die Internetverbidnung aktiv ist und versuche es dann erneut.</string>
-        
+
+    <string name="team_team_members">Team-Mitglieder</string>
+    <string name="user_user_entries">Einträge</string>
     <string name="makeFavorite">Zu Favoriten hinzufügen</string>
     <string name="removeFavorite">Aus Favoriten entfernen</string>
     <string name="drawer_open">Open navigation drawer</string>

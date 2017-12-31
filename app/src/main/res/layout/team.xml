@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_gravity="fill_horizontal"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
-    <LinearLayout android:layout_width="fill_parent"
-        android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/outerContainer"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:orientation="vertical">
         <!-- The ActionBar displayed at the top -->
         <include
@@ -23,7 +24,9 @@
             android:id="@+id/tableRow1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="left|center">
+            android:gravity="left|center"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp">
 
             <ImageView
                 android:id="@+id/imageView1"
@@ -46,7 +49,9 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="fill_horizontal"
-            android:gravity="fill_horizontal" >
+            android:gravity="fill_horizontal"
+            android:paddingBottom="5dp"
+            android:paddingTop="10dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -60,6 +65,7 @@
                     android:id="@+id/imageView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
                     android:src="@drawable/star" />
 
                 <TextView
@@ -67,6 +73,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="4dp"
                     android:text="Medium Text"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
             </LinearLayout>
@@ -83,6 +90,7 @@
                     android:id="@+id/imageView3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
                     android:src="@drawable/timer" />
 
                 <TextView
@@ -90,6 +98,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="4dp"
                     android:layout_weight="0.5"
                     android:text="Medium Text"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -97,16 +106,31 @@
             </LinearLayout>
         </TableRow>
 
-        <TableLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/team_team_members"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
+                android:background="#ccc" />
 
             <ListView
                 android:id="@+id/teamEntryList"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-            </ListView>
-        </TableLayout>
+                android:layout_height="match_parent"></ListView>
+        </LinearLayout>
     </LinearLayout>
 
 
