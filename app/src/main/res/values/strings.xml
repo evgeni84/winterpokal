@@ -61,6 +61,11 @@
     <string name="ranking_tab_header_teams">Teams</string>
     <string name="favorites_tab_header_users">Benutzer</string>
     <string name="favorites_tab_header_teams">Teams</string>
+    <string name="entry_points">Punkte</string>
+    <string name="entry_type_cycling">Radfahren</string>
+    <string name="entry_type_run">Laufen</string>
+    <string name="entry_type_other">Sonstiges</string>
+    <string name="entry_type_skiing">Langlauf</string>
     <string-array name="object_type">
         <item>User</item>
         <item>Team</item>
