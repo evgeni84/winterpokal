@@ -58,6 +58,7 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemClick
 	private final static String TAB_USER ="tUser";
     private final static String TAB_TEAM ="tTeam";
     ListView lvTeams, lvUsers;
+    private TabHost tabHost;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -99,7 +100,7 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemClick
 	public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
 		final View v = inflater.inflate(R.layout.ranking, null);
 
-        TabHost tabHost = (TabHost)v.findViewById(android.R.id.tabhost);
+        tabHost = (TabHost)v.findViewById(android.R.id.tabhost);
         tabHost.setup();
         tabHost.addTab(tabHost.newTabSpec(TAB_USER).setIndicator(getResources().getString(R.string.ranking_tab_header_users)).setContent(R.id.ranking_list_user));
         tabHost.addTab(tabHost.newTabSpec(TAB_TEAM).setIndicator(getResources().getString(R.string.ranking_tab_header_teams)).setContent(R.id.ranking_list_team));
@@ -136,10 +137,15 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemClick
 		super.onResume();
 		adapterUser = new RankingArrayAdapter(getActivity(), entriesUser);
 		adapterTeam = new RankingArrayAdapter(getActivity(), entriesTeam);
-		showTeamRanking = false;
 		lvUsers.setAdapter(adapterUser);
 		lvTeams.setAdapter(adapterTeam);
-		LaunchTaskOrDoNothingIfRunning();
+
+
+		 String tabId = tabHost.getCurrentTabTag();
+		 if(tabId==null)
+		 	tabId = TAB_USER;
+
+		onTabChanged(tabId);
 	}
 
 	private void LaunchTaskOrDoNothingIfRunning() {
