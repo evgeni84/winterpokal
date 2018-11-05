@@ -285,7 +285,7 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemClick
 
 			try {
 				if (teamRanking)
-					moreEntries = App.getInstance().getDAOFactory().getRankingDAO().getByTeams(limit, pointerUser);
+					moreEntries = App.getInstance().getDAOFactory().getRankingDAO().getByTeams(limit, pointerTeam);
 				else
 					moreEntries = App.getInstance().getDAOFactory().getRankingDAO().get(SportTypes.total, "points", limit, pointerUser);
 			} catch (DAORemoteException ex) {
